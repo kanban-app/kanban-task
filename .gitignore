@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Generated code (воссоздаётся через npx buf generate)
+src/grpc/generated/
+
+# Environment variables
+.env
+.env.local
+
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
