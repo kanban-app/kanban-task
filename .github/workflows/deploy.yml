@@ -25,7 +25,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             set -e
-            cd ~/kanban-auth
+            cd ~/kanban-task
             git pull origin main
             docker compose up -d --build
             docker image prune -f
