@@ -27,5 +27,15 @@ jobs:
             set -e
             cd ~/kanban-task
             git pull origin main
-            docker compose up -d --build
+            git submodule update --init
+            docker build -t kanban-task .
+            docker stop kanban-task-app || true
+            docker rm kanban-task-app || true
+            docker run -d \
+              --name kanban-task-app \
+              --network kanban-network \
+              --env-file .env \
+              -p 3002:3002 \
+              --restart always \
+              kanban-task
             docker image prune -f
