@@ -10,17 +10,15 @@ RUN wget -qO /usr/local/bin/buf https://github.com/bufbuild/buf/releases/latest/
 COPY package.json pnpm-lock.yaml buf.gen.yaml ./
 RUN pnpm install --frozen-lockfile
 
-# Копируем proto submodule и генерируем
+# Копируем proto submodule
 COPY proto ./proto
+
+# Генерируем код из proto
 RUN PATH="$PATH:./node_modules/.bin" buf generate
 
 # Копируем остальные исходники
 COPY . .
 
-# Генерируем Prisma клиент
-RUN pnpm prisma generate
-
-# Собираем TypeScript
 RUN pnpm build
 
 FROM node:20-alpine AS runner
@@ -32,9 +30,7 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --prod
 
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY prisma ./prisma
 
-EXPOSE 3001 50051
+EXPOSE 3002
 
 CMD ["node", "dist/index.js"]
