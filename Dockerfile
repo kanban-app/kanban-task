@@ -3,10 +3,22 @@ WORKDIR /app
 
 RUN corepack enable && corepack prepare pnpm@9 --activate
 
-COPY package.json pnpm-lock.yaml ./
+# Устанавливаем buf
+RUN wget -qO /usr/local/bin/buf https://github.com/bufbuild/buf/releases/latest/download/buf-Linux-x86_64 \
+    && chmod +x /usr/local/bin/buf
+
+COPY package.json pnpm-lock.yaml buf.gen.yaml ./
 RUN pnpm install --frozen-lockfile
 
+# Копируем proto submodule
+COPY proto ./proto
+
+# Генерируем код из proto
+RUN PATH="$PATH:./node_modules/.bin" buf generate
+
+# Копируем остальные исходники
 COPY . .
+
 RUN pnpm build
 
 FROM node:20-alpine AS runner
