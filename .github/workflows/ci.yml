@@ -79,12 +79,6 @@ jobs:
       - name: Generate proto
         run: PATH="$PATH:./node_modules/.bin" buf generate
 
-      - name: Prisma generate
-        run: pnpm prisma generate
-
-      - name: Prisma migrate
-        run: pnpm prisma migrate deploy
-
       # - name: Lint
       #   run: pnpm lint
 
